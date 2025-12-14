@@ -14,8 +14,13 @@ output "public_subnet_ids" {
 }
 
 output "private_subnet_ids" {
-  description = "List of private subnet IDs"
+  description = "List of private subnet IDs (application layer)"
   value       = aws_subnet.private[*].id
+}
+
+output "database_subnet_ids" {
+  description = "List of isolated database subnet IDs (data layer)"
+  value       = aws_subnet.database[*].id
 }
 
 output "internet_gateway_id" {
@@ -26,5 +31,15 @@ output "internet_gateway_id" {
 output "nat_gateway_ids" {
   description = "List of NAT Gateway IDs"
   value       = aws_nat_gateway.main[*].id
+}
+
+output "private_route_table_ids" {
+  description = "List of private route table IDs"
+  value       = aws_route_table.private[*].id
+}
+
+output "database_route_table_id" {
+  description = "Database (isolated) route table ID"
+  value       = aws_route_table.database.id
 }
 

@@ -33,7 +33,8 @@ resource "aws_subnet" "public" {
   }
 }
 
-# Private Subnets (one per AZ)
+# Private Subnets (Application Layer - one per AZ)
+# These subnets have outbound internet access via NAT Gateway
 resource "aws_subnet" "private" {
   count = length(var.availability_zones)
 
@@ -44,7 +45,54 @@ resource "aws_subnet" "private" {
   tags = {
     Name = "${var.project_name}-private-subnet-${count.index + 1}"
     Type = "private"
+    Tier = "application"
   }
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ISOLATED DATABASE SUBNETS (Data Layer)
+# ═══════════════════════════════════════════════════════════════════════════════
+# These subnets have NO route to NAT Gateway or Internet Gateway.
+# This is a critical security control that:
+#   1. Prevents data exfiltration from compromised database
+#   2. Satisfies compliance requirements (HIPAA, PCI-DSS)
+#   3. Implements true network isolation for the data tier
+#
+# Database servers access AWS services via VPC Endpoints (PrivateLink)
+# ═══════════════════════════════════════════════════════════════════════════════
+resource "aws_subnet" "database" {
+  count = length(var.availability_zones)
+
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(var.vpc_cidr, 8, count.index + 20)
+  availability_zone = var.availability_zones[count.index]
+
+  tags = {
+    Name = "${var.project_name}-database-subnet-${count.index + 1}"
+    Type = "isolated"
+    Tier = "database"
+  }
+}
+
+# Isolated Route Table (NO default route - completely isolated)
+resource "aws_route_table" "database" {
+  vpc_id = aws_vpc.main.id
+
+  # NO routes to NAT Gateway or Internet Gateway
+  # Traffic can only flow within VPC or via VPC Endpoints
+
+  tags = {
+    Name = "${var.project_name}-database-rt"
+    Type = "isolated"
+  }
+}
+
+# Database Route Table Associations
+resource "aws_route_table_association" "database" {
+  count = length(aws_subnet.database)
+
+  subnet_id      = aws_subnet.database[count.index].id
+  route_table_id = aws_route_table.database.id
 }
 
 # Elastic IPs for NAT Gateways

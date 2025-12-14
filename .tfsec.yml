@@ -1,0 +1,21 @@
+# tfsec configuration
+# https://aquasecurity.github.io/tfsec/
+
+# Minimum severity to report (CRITICAL, HIGH, MEDIUM, LOW)
+minimum_severity: LOW
+
+# Exclude specific checks if needed (with justification)
+exclude:
+  # We're using t3.micro for Free Tier compatibility, not production
+  # - aws-ec2-enforce-http-token-imds
+
+# Include paths
+include:
+  - "."
+  - "./modules/**"
+
+# Exclude paths
+exclude_path:
+  - ".terraform"
+  - "examples"
+

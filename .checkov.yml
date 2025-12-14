@@ -1,0 +1,30 @@
+# Checkov configuration
+# https://www.checkov.io/
+
+# Frameworks to scan
+framework:
+  - terraform
+
+# Directories to scan
+directory:
+  - .
+
+# Skip specific checks with justification
+skip-check:
+  # Using t3.micro for Free Tier - detailed monitoring adds cost
+  # - CKV_AWS_126
+  
+# Soft fail - don't break CI on findings (for demo purposes)
+soft-fail: true
+
+# Output format
+output:
+  - cli
+  - json
+
+# Compact output
+compact: true
+
+# Download external modules
+download-external-modules: false
+

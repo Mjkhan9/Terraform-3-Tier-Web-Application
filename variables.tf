@@ -83,3 +83,15 @@ variable "certificate_arn" {
   default     = ""
 }
 
+variable "enable_nat_gateway" {
+  description = "Enable NAT Gateway for private subnets (set to false to reduce costs)"
+  type        = bool
+  default     = true
+}
+
+variable "enable_ssm_endpoints" {
+  description = "Enable SSM VPC Endpoints for Session Manager (eliminates need for SSH)"
+  type        = bool
+  default     = true
+}
+
