@@ -119,9 +119,9 @@ def index():
                 try {
                     const response = await fetch('/api/db-test');
                     const data = await response.json();
-                    results.innerHTML = `<div class="status"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                    results.innerHTML = '<div class="status"><pre>' + JSON.stringify(data, null, 2) + '</pre></div>';
                 } catch (error) {
-                    results.innerHTML = `<div class="status"><p class="error">Error: ${error.message}</p></div>`;
+                    results.innerHTML = '<div class="status"><p class="error">Error: ' + error.message + '</p></div>';
                 }
             }
             async function testS3() {
@@ -130,9 +130,9 @@ def index():
                 try {
                     const response = await fetch('/api/s3-test');
                     const data = await response.json();
-                    results.innerHTML = `<div class="status"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+                    results.innerHTML = '<div class="status"><pre>' + JSON.stringify(data, null, 2) + '</pre></div>';
                 } catch (error) {
-                    results.innerHTML = `<div class="status"><p class="error">Error: ${error.message}</p></div>`;
+                    results.innerHTML = '<div class="status"><p class="error">Error: ' + error.message + '</p></div>';
                 }
             }
         </script>
