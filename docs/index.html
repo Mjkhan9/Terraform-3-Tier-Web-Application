@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohammad Khan | Cloud Engineer Portfolio</title>
-    <meta name="description" content="AWS Solutions Architect - Cloud Infrastructure & IAM Portfolio">
+    <title>Mohammad Khan | Terraform 3-Tier Web Application</title>
+    <meta name="description" content="AWS Solutions Architect - Production-grade Terraform Infrastructure Portfolio">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -326,112 +326,6 @@
             margin: 0 auto;
         }
 
-        /* Project Cards */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 24px;
-        }
-
-        .project-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-
-        .project-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .project-card.featured {
-            grid-column: span 2;
-        }
-
-        @media (max-width: 768px) {
-            .project-card.featured {
-                grid-column: span 1;
-            }
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .project-header {
-            padding: 24px 24px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .project-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--gradient-1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .project-links {
-            display: flex;
-            gap: 8px;
-        }
-
-        .project-link {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-dark);
-            border-radius: 8px;
-            color: var(--text-gray);
-            transition: all 0.2s;
-        }
-
-        .project-link:hover {
-            color: var(--accent-blue);
-            background: rgba(59, 130, 246, 0.1);
-        }
-
-        .project-body {
-            padding: 20px 24px 24px;
-        }
-
-        .project-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .project-desc {
-            color: var(--text-gray);
-            font-size: 14px;
-            margin-bottom: 16px;
-            line-height: 1.7;
-        }
-
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tech-tag {
-            padding: 4px 12px;
-            background: var(--bg-dark);
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--accent-cyan);
-        }
-
         /* Architecture */
         .arch-container {
             background: var(--bg-card);
@@ -506,9 +400,147 @@
             color: var(--accent-purple);
         }
 
+        /* Skills Pills */
+        .skills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 48px;
+        }
+
+        .skill-pill {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-gray);
+            transition: all 0.2s;
+        }
+
+        .skill-pill:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Other Projects Section */
+        .other-projects {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-body {
+            padding: 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .project-desc {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            padding: 4px 12px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-cyan);
+        }
+
+        .project-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .project-btn:hover {
+            background: var(--gradient-1);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .project-btn svg {
+            transition: transform 0.2s;
+        }
+
+        .project-btn:hover svg {
+            transform: translateX(4px);
+        }
+
         /* Contact */
         .contact-section {
-            background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(59, 130, 246, 0.05) 100%);
+            background: var(--bg-dark);
         }
 
         .contact-grid {
@@ -610,41 +642,6 @@
             color: var(--accent-blue);
             text-decoration: none;
         }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate {
-            animation: fadeIn 0.6s ease-out forwards;
-        }
-
-        /* Skills Pills */
-        .skills-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 32px;
-        }
-
-        .skill-pill {
-            padding: 8px 16px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-gray);
-            transition: all 0.2s;
-        }
-
-        .skill-pill:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
     </style>
 </head>
 <body>
@@ -655,15 +652,15 @@
                 <div class="logo">Mohammad Khan</div>
                 <nav>
                     <ul class="nav-links">
-                        <li><a href="#projects">Projects</a></li>
                         <li><a href="#architecture">Architecture</a></li>
                         <li><a href="#modules">Modules</a></li>
+                        <li><a href="#other-projects">Other Projects</a></li>
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                 </nav>
                 <div class="header-cta">
                     <a href="https://linkedin.com/in/mohammad-jkhan" target="_blank" class="btn btn-outline">LinkedIn</a>
-                    <a href="https://github.com/Mjkhan9" target="_blank" class="btn btn-primary">GitHub</a>
+                    <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank" class="btn btn-primary">View Code</a>
                 </div>
             </div>
         </div>
@@ -674,8 +671,8 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>Cloud & IAM<br><span>Engineer</span></h1>
-                    <p class="hero-subtitle">AWS Solutions Architect with expertise in Identity & Access Management, Infrastructure as Code, and cloud security. Building production-grade systems with Terraform.</p>
+                    <h1>Terraform 3-Tier<br><span>Web Application</span></h1>
+                    <p class="hero-subtitle">Production-grade, auto-scaling AWS infrastructure with 10 Terraform modules. Features isolated database subnets, VPC endpoints, CI/CD with GitHub Actions, and enterprise security controls.</p>
                     
                     <!-- AWS Certification Badges from Credly -->
                     <div class="hero-badges">
@@ -688,13 +685,13 @@
                     </div>
 
                     <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-                            View Projects
+                        <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank" class="btn btn-primary">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            View Source Code
                         </a>
-                        <a href="mailto:mjkhan9@cougarnet.uh.edu" class="btn btn-outline">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            Contact Me
+                        <a href="#architecture" class="btn btn-outline">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                            View Architecture
                         </a>
                     </div>
                 </div>
@@ -714,123 +711,8 @@
                             <div class="stat-label">Tier Architecture</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number">8K+</div>
-                            <div class="stat-label">Users Supported</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Portfolio</span>
-                <h2 class="section-title">Featured Projects</h2>
-                <p class="section-desc">Cloud infrastructure and security projects demonstrating AWS expertise and Infrastructure as Code best practices.</p>
-            </div>
-
-            <div class="projects-grid">
-                <!-- Featured: Terraform 3-Tier -->
-                <div class="project-card featured">
-                    <div class="project-header">
-                        <div class="project-icon">🏗️</div>
-                        <div class="project-links">
-                            <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank" class="project-link" title="GitHub">
-                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Terraform 3-Tier Web Application</h3>
-                        <p class="project-desc">Production-grade, auto-scaling AWS infrastructure with 10 Terraform modules. Features isolated database subnets, VPC endpoints, CI/CD with GitHub Actions, security scanning (tfsec/Checkov), and OIDC authentication. Demonstrates enterprise-level cloud architecture.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Terraform</span>
-                            <span class="tech-tag">AWS VPC</span>
-                            <span class="tech-tag">ALB</span>
-                            <span class="tech-tag">Auto Scaling</span>
-                            <span class="tech-tag">RDS PostgreSQL</span>
-                            <span class="tech-tag">GitHub Actions</span>
-                            <span class="tech-tag">Secrets Manager</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AWS Student Data Infrastructure -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon">🔐</div>
-                        <div class="project-links">
-                            <a href="https://github.com/Mjkhan9/aws-student-data-infrastructure" target="_blank" class="project-link" title="GitHub">
-                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            </a>
-                            <a href="https://mjkhan9.github.io/aws-student-data-infrastructure/" target="_blank" class="project-link" title="Live Demo">
-                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Secure AWS Student Data Infrastructure</h3>
-                        <p class="project-desc">3-tier VPC with attack simulator for security testing. Automated deployment of encrypted S3, VPC Flow Logs, and least-privilege IAM roles using Python/Boto3.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">AWS</span>
-                            <span class="tech-tag">Boto3</span>
-                            <span class="tech-tag">Python</span>
-                            <span class="tech-tag">VPC</span>
-                            <span class="tech-tag">IAM</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IAM Lifecycle Management -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon">👤</div>
-                        <div class="project-links">
-                            <a href="https://github.com/Mjkhan9/Automated-IAM-User-Lifecycle-Management-System-Project" target="_blank" class="project-link" title="GitHub">
-                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            </a>
-                            <a href="https://mjkhan9.github.io/Automated-IAM-User-Lifecycle-Management-System-Project/" target="_blank" class="project-link" title="Live Demo">
-                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">Hybrid IAM User Lifecycle Management</h3>
-                        <p class="project-desc">Web-based automation platform (Flask + PowerShell) to sync user lifecycle events between on-prem Active Directory and AWS IAM with KMS credential handling.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">IAM</span>
-                            <span class="tech-tag">Active Directory</span>
-                            <span class="tech-tag">Flask</span>
-                            <span class="tech-tag">PowerShell</span>
-                            <span class="tech-tag">AWS KMS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IT Support Ticket Simulator -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-icon">🎫</div>
-                        <div class="project-links">
-                            <a href="https://github.com/Mjkhan9/IT-Support-Ticket-Simulator" target="_blank" class="project-link" title="GitHub">
-                                <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                            </a>
-                            <a href="https://mjkhan9.github.io/IT-Support-Ticket-Simulator/" target="_blank" class="project-link" title="Live Demo">
-                                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="project-body">
-                        <h3 class="project-title">IT Support Ticket Simulator</h3>
-                        <p class="project-desc">Interactive simulation platform for practicing IT support workflows, ticket triage, and incident response procedures with realistic scenarios.</p>
-                        <div class="project-tech">
-                            <span class="tech-tag">JavaScript</span>
-                            <span class="tech-tag">ITSM</span>
-                            <span class="tech-tag">ServiceNow</span>
-                            <span class="tech-tag">Incident Response</span>
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Free Tier Compatible</div>
                         </div>
                     </div>
                 </div>
@@ -1040,8 +922,80 @@
                 <span class="skill-pill">S3</span>
                 <span class="skill-pill">CloudWatch</span>
                 <span class="skill-pill">GitHub Actions</span>
-                <span class="skill-pill">Active Directory</span>
-                <span class="skill-pill">Zero Trust</span>
+                <span class="skill-pill">CI/CD</span>
+                <span class="skill-pill">DevSecOps</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Other Projects -->
+    <section id="other-projects" class="other-projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">More Work</span>
+                <h2 class="section-title">Other Projects</h2>
+                <p class="section-desc">Additional cloud infrastructure and security projects from my portfolio.</p>
+            </div>
+
+            <div class="projects-grid">
+                <!-- AWS Student Data Infrastructure -->
+                <div class="project-card">
+                    <div class="project-body">
+                        <div class="project-icon">🔐</div>
+                        <h3 class="project-title">Secure AWS Student Data Infrastructure</h3>
+                        <p class="project-desc">3-tier VPC with attack simulator for security testing. Automated deployment of encrypted S3, VPC Flow Logs, and least-privilege IAM roles using Python/Boto3. Demonstrates incident response capabilities.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">Boto3</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">VPC</span>
+                            <span class="tech-tag">IAM</span>
+                        </div>
+                        <a href="https://mjkhan9.github.io/aws-student-data-infrastructure/" target="_blank" class="project-btn">
+                            View This Project
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- IAM Lifecycle Management -->
+                <div class="project-card">
+                    <div class="project-body">
+                        <div class="project-icon">👤</div>
+                        <h3 class="project-title">Hybrid IAM User Lifecycle Management</h3>
+                        <p class="project-desc">Web-based automation platform (Flask + PowerShell) to sync user lifecycle events between on-prem Active Directory and AWS IAM. Features KMS credential handling and audit logging.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">IAM</span>
+                            <span class="tech-tag">Active Directory</span>
+                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">PowerShell</span>
+                            <span class="tech-tag">AWS KMS</span>
+                        </div>
+                        <a href="https://mjkhan9.github.io/Automated-IAM-User-Lifecycle-Management-System-Project/" target="_blank" class="project-btn">
+                            View This Project
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- IT Support Ticket Simulator -->
+                <div class="project-card">
+                    <div class="project-body">
+                        <div class="project-icon">🎫</div>
+                        <h3 class="project-title">IT Support Ticket Simulator</h3>
+                        <p class="project-desc">Interactive simulation platform for practicing IT support workflows, ticket triage, and incident response procedures. Features realistic scenarios based on enterprise environments.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">ITSM</span>
+                            <span class="tech-tag">ServiceNow</span>
+                            <span class="tech-tag">Incident Response</span>
+                        </div>
+                        <a href="https://mjkhan9.github.io/IT-Support-Ticket-Simulator/" target="_blank" class="project-btn">
+                            View This Project
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1108,8 +1062,5 @@
             </p>
         </div>
     </footer>
-</body>
-</html>
-
 </body>
 </html>
