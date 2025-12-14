@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraform 3-Tier Web Application | Cloud Infrastructure Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f2e;
+            --accent-cyan: #22d3ee;
+            --accent-purple: #a78bfa;
+            --accent-green: #34d399;
+            --accent-orange: #fb923c;
+            --accent-pink: #f472b6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(34, 211, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(167, 139, 250, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(52, 211, 153, 0.05) 0%, transparent 70%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(34, 211, 238, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(34, 211, 238, 0.1);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 14px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Architecture Section */
+        .architecture-diagram {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        .architecture-diagram pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--accent-cyan);
+            white-space: pre;
+            margin: 0;
+        }
+
+        /* Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-cyan);
+        }
+
+        .module-card:hover::before {
+            opacity: 1;
+        }
+
+        .module-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(167, 139, 250, 0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .module-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .module-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .module-resources {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .resource-tag {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent-cyan);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Code Section */
+        .code-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .code-showcase {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .code-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .code-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot:nth-child(1) { background: #ff5f56; }
+        .code-dot:nth-child(2) { background: #ffbd2e; }
+        .code-dot:nth-child(3) { background: #27ca40; }
+
+        .code-content {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .code-content code {
+            color: var(--text-secondary);
+        }
+
+        .code-content .keyword { color: var(--accent-purple); }
+        .code-content .string { color: var(--accent-green); }
+        .code-content .comment { color: #6b7280; }
+        .code-content .resource { color: var(--accent-cyan); }
+        .code-content .property { color: var(--accent-orange); }
+        .code-content .value { color: var(--accent-pink); }
+
+        /* Resources Section */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .resource-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .resource-item:hover {
+            border-color: var(--accent-cyan);
+            transform: translateX(4px);
+        }
+
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(167, 139, 250, 0.2));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .resource-info h4 {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .resource-info span {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(167, 139, 250, 0.1));
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <span>🏗️</span>
+            <span>Infrastructure as Code Portfolio Project</span>
+        </div>
+        <h1>Terraform 3-Tier<br>Web Application</h1>
+        <p class="hero-subtitle">
+            A production-grade, auto-scaling AWS infrastructure built with Terraform. 
+            Demonstrating cloud architecture, modular IaC, and DevOps best practices.
+        </p>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number">7</div>
+                <div class="stat-label">Terraform Modules</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">AWS Resources</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Tier Architecture</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Free Tier Compatible</div>
+            </div>
+        </div>
+        <div class="hero-buttons">
+            <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" class="btn btn-primary" target="_blank">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                View on GitHub
+            </a>
+            <a href="#architecture" class="btn btn-secondary">
+                View Architecture
+            </a>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-label">System Design</span>
+                <h2 class="section-title">Architecture Overview</h2>
+                <p class="section-desc">Multi-AZ deployment with proper network isolation, auto-scaling, and comprehensive monitoring.</p>
+            </div>
+            <div class="architecture-diagram animate-on-scroll">
+<pre>
+                              ┌─────────────────────────────────────────────────────────────┐
+                              │                        INTERNET                              │
+                              └─────────────────────────────┬───────────────────────────────┘
+                                                            │
+                                                            ▼
+                                               ┌────────────────────────┐
+                                               │     ROUTE 53 (DNS)     │
+                                               └────────────┬───────────┘
+                                                            │
+                    ╔═══════════════════════════════════════╧═══════════════════════════════════════╗
+                    ║                                      VPC                                       ║
+                    ║                               (10.0.0.0/16)                                   ║
+                    ║  ┌─────────────────────────────────────────────────────────────────────────┐  ║
+                    ║  │                         PUBLIC SUBNETS                                  │  ║
+                    ║  │  ┌─────────────────────────────────────────────────────────────────┐   │  ║
+                    ║  │  │              APPLICATION LOAD BALANCER                          │   │  ║
+                    ║  │  │              HTTP (80) / HTTPS (443)                            │   │  ║
+                    ║  │  │         Health Checks • Sticky Sessions • Logging              │   │  ║
+                    ║  │  └─────────────────────────────────────────────────────────────────┘   │  ║
+                    ║  │                                                                        │  ║
+                    ║  │  ┌──────────────────┐                    ┌──────────────────┐         │  ║
+                    ║  │  │   NAT Gateway    │                    │   NAT Gateway    │         │  ║
+                    ║  │  │   (AZ-1)         │                    │   (AZ-2)         │         │  ║
+                    ║  │  └──────────────────┘                    └──────────────────┘         │  ║
+                    ║  │       10.0.0.0/24                              10.0.1.0/24            │  ║
+                    ║  └────────────────────────────────────────────────────────────────────────┘  ║
+                    ║                                      │                                       ║
+                    ║                                      ▼                                       ║
+                    ║  ┌─────────────────────────────────────────────────────────────────────────┐  ║
+                    ║  │                        PRIVATE SUBNETS                                  │  ║
+                    ║  │                                                                        │  ║
+                    ║  │  ┌─────────────────────────────────────────────────────────────────┐   │  ║
+                    ║  │  │                   AUTO SCALING GROUP                            │   │  ║
+                    ║  │  │  ┌─────────────────┐              ┌─────────────────┐          │   │  ║
+                    ║  │  │  │   EC2 (AZ-1)    │              │   EC2 (AZ-2)    │          │   │  ║
+                    ║  │  │  │   t3.micro      │              │   t3.micro      │          │   │  ║
+                    ║  │  │  │   Flask App     │              │   Flask App     │          │   │  ║
+                    ║  │  │  │   Port 80       │              │   Port 80       │          │   │  ║
+                    ║  │  │  └─────────────────┘              └─────────────────┘          │   │  ║
+                    ║  │  │              Min: 2  │  Desired: 2  │  Max: 4                   │   │  ║
+                    ║  │  └─────────────────────────────────────────────────────────────────┘   │  ║
+                    ║  │                                                                        │  ║
+                    ║  │                                 │                                      │  ║
+                    ║  │                                 ▼                                      │  ║
+                    ║  │  ┌─────────────────────────────────────────────────────────────────┐   │  ║
+                    ║  │  │                   RDS POSTGRESQL                                │   │  ║
+                    ║  │  │                   db.t3.micro                                   │   │  ║
+                    ║  │  │           Encrypted • Automated Backups • 7-day retention      │   │  ║
+                    ║  │  └─────────────────────────────────────────────────────────────────┘   │  ║
+                    ║  │       10.0.10.0/24                             10.0.11.0/24           │  ║
+                    ║  └────────────────────────────────────────────────────────────────────────┘  ║
+                    ║                                                                              ║
+                    ╚══════════════════════════════════════════════════════════════════════════════╝
+
+    ┌─────────────────────────────────────────┐    ┌─────────────────────────────────────────┐
+    │              S3 BUCKETS                 │    │           CLOUDWATCH                    │
+    │  • Application Assets (Encrypted)       │    │  • CPU Utilization Alarms              │
+    │  • ALB Access Logs (30-day retention)  │    │  • Response Time Monitoring            │
+    │  • Versioning Enabled                  │    │  • VPC Flow Logs                       │
+    └─────────────────────────────────────────┘    │  • Application Logs                    │
+                                                   │  • SNS Alert Notifications             │
+                                                   └─────────────────────────────────────────┘
+</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section id="modules">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-label">Modular Design</span>
+                <h2 class="section-title">7 Terraform Modules</h2>
+                <p class="section-desc">Clean, reusable infrastructure components following Terraform best practices.</p>
+            </div>
+            <div class="modules-grid">
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">🌐</div>
+                    <h3>VPC Module</h3>
+                    <p>Complete network infrastructure with public/private subnets, NAT Gateways, and VPC Flow Logs.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_vpc</span>
+                        <span class="resource-tag">aws_subnet</span>
+                        <span class="resource-tag">aws_nat_gateway</span>
+                        <span class="resource-tag">aws_flow_log</span>
+                    </div>
+                </div>
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">🔒</div>
+                    <h3>Security Groups</h3>
+                    <p>Network isolation with least-privilege access rules for ALB, application, and database tiers.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_security_group</span>
+                        <span class="resource-tag">ingress_rules</span>
+                        <span class="resource-tag">egress_rules</span>
+                    </div>
+                </div>
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">⚖️</div>
+                    <h3>ALB Module</h3>
+                    <p>Application Load Balancer with target groups, health checks, and optional HTTPS support.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_lb</span>
+                        <span class="resource-tag">aws_lb_target_group</span>
+                        <span class="resource-tag">aws_lb_listener</span>
+                    </div>
+                </div>
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">📈</div>
+                    <h3>ASG Module</h3>
+                    <p>Auto Scaling Group with launch templates, user data scripts, and scaling policies.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_autoscaling_group</span>
+                        <span class="resource-tag">aws_launch_template</span>
+                        <span class="resource-tag">aws_autoscaling_policy</span>
+                    </div>
+                </div>
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">🗄️</div>
+                    <h3>RDS Module</h3>
+                    <p>PostgreSQL database with encryption, automated backups, and CloudWatch log exports.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_db_instance</span>
+                        <span class="resource-tag">aws_db_subnet_group</span>
+                        <span class="resource-tag">aws_db_parameter_group</span>
+                    </div>
+                </div>
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">📦</div>
+                    <h3>S3 Module</h3>
+                    <p>Encrypted S3 buckets for assets and ALB logs with versioning and lifecycle policies.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_s3_bucket</span>
+                        <span class="resource-tag">aws_s3_bucket_versioning</span>
+                        <span class="resource-tag">aws_s3_bucket_lifecycle</span>
+                    </div>
+                </div>
+                <div class="module-card animate-on-scroll">
+                    <div class="module-icon">📊</div>
+                    <h3>CloudWatch Module</h3>
+                    <p>Monitoring and alerting with CPU alarms, response time tracking, and SNS notifications.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_cloudwatch_metric_alarm</span>
+                        <span class="resource-tag">aws_sns_topic</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Section -->
+    <section id="code">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-label">Sample Code</span>
+                <h2 class="section-title">Clean Terraform Code</h2>
+                <p class="section-desc">Well-structured, documented infrastructure code following best practices.</p>
+            </div>
+            <div class="code-showcase">
+                <div class="code-block animate-on-scroll">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                        </div>
+                        <div class="code-title">
+                            <span>📄</span>
+                            <span>modules/vpc/main.tf</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><code><span class="comment"># VPC with DNS support</span>
+<span class="keyword">resource</span> <span class="string">"aws_vpc"</span> <span class="resource">"main"</span> {
+  <span class="property">cidr_block</span>           = <span class="value">var.vpc_cidr</span>
+  <span class="property">enable_dns_hostnames</span> = <span class="value">true</span>
+  <span class="property">enable_dns_support</span>   = <span class="value">true</span>
+
+  <span class="property">tags</span> = {
+    <span class="property">Name</span> = <span class="string">"${var.project_name}-vpc"</span>
+  }
+}
+
+<span class="comment"># Public Subnets (Multi-AZ)</span>
+<span class="keyword">resource</span> <span class="string">"aws_subnet"</span> <span class="resource">"public"</span> {
+  <span class="property">count</span> = <span class="value">length(var.availability_zones)</span>
+
+  <span class="property">vpc_id</span>                  = <span class="value">aws_vpc.main.id</span>
+  <span class="property">cidr_block</span>              = <span class="value">cidrsubnet(var.vpc_cidr, 8, count.index)</span>
+  <span class="property">availability_zone</span>       = <span class="value">var.availability_zones[count.index]</span>
+  <span class="property">map_public_ip_on_launch</span> = <span class="value">true</span>
+}</code></pre>
+                    </div>
+                </div>
+                <div class="code-block animate-on-scroll">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                        </div>
+                        <div class="code-title">
+                            <span>📄</span>
+                            <span>modules/asg/main.tf</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><code><span class="comment"># Auto Scaling Group</span>
+<span class="keyword">resource</span> <span class="string">"aws_autoscaling_group"</span> <span class="resource">"app"</span> {
+  <span class="property">name</span>                = <span class="string">"${var.project_name}-asg"</span>
+  <span class="property">vpc_zone_identifier</span> = <span class="value">var.private_subnet_ids</span>
+  <span class="property">target_group_arns</span>   = <span class="value">[var.target_group_arn]</span>
+  <span class="property">health_check_type</span>   = <span class="string">"ELB"</span>
+
+  <span class="property">min_size</span>         = <span class="value">var.min_size</span>
+  <span class="property">max_size</span>         = <span class="value">var.max_size</span>
+  <span class="property">desired_capacity</span> = <span class="value">var.desired_capacity</span>
+
+  <span class="keyword">launch_template</span> {
+    <span class="property">id</span>      = <span class="value">aws_launch_template.app.id</span>
+    <span class="property">version</span> = <span class="string">"$Latest"</span>
+  }
+
+  <span class="keyword">instance_refresh</span> {
+    <span class="property">strategy</span> = <span class="string">"Rolling"</span>
+  }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="code-block animate-on-scroll">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                        </div>
+                        <div class="code-title">
+                            <span>📄</span>
+                            <span>modules/security-groups/main.tf</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><code><span class="comment"># RDS Security Group (Database Tier)</span>
+<span class="keyword">resource</span> <span class="string">"aws_security_group"</span> <span class="resource">"rds"</span> {
+  <span class="property">name</span>        = <span class="string">"${var.project_name}-rds-sg"</span>
+  <span class="property">description</span> = <span class="string">"Security group for RDS database"</span>
+  <span class="property">vpc_id</span>      = <span class="value">var.vpc_id</span>
+
+  <span class="keyword">ingress</span> {
+    <span class="property">description</span>     = <span class="string">"PostgreSQL from app instances"</span>
+    <span class="property">from_port</span>       = <span class="value">5432</span>
+    <span class="property">to_port</span>         = <span class="value">5432</span>
+    <span class="property">protocol</span>        = <span class="string">"tcp"</span>
+    <span class="property">security_groups</span> = <span class="value">[aws_security_group.app.id]</span>
+  }
+}</code></pre>
+                    </div>
+                </div>
+                <div class="code-block animate-on-scroll">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                            <span class="code-dot"></span>
+                        </div>
+                        <div class="code-title">
+                            <span>📄</span>
+                            <span>modules/rds/main.tf</span>
+                        </div>
+                    </div>
+                    <div class="code-content">
+<pre><code><span class="comment"># RDS PostgreSQL Instance</span>
+<span class="keyword">resource</span> <span class="string">"aws_db_instance"</span> <span class="resource">"main"</span> {
+  <span class="property">identifier</span>         = <span class="string">"${var.project_name}-db"</span>
+  <span class="property">engine</span>             = <span class="string">"postgres"</span>
+  <span class="property">engine_version</span>     = <span class="string">"15"</span>
+  <span class="property">instance_class</span>     = <span class="value">var.db_instance_class</span>
+  <span class="property">allocated_storage</span>  = <span class="value">var.db_allocated_storage</span>
+  <span class="property">storage_encrypted</span>  = <span class="value">true</span>
+
+  <span class="property">db_name</span>  = <span class="value">var.db_name</span>
+  <span class="property">username</span> = <span class="value">var.db_username</span>
+  <span class="property">password</span> = <span class="value">var.db_password</span>
+
+  <span class="property">backup_retention_period</span> = <span class="value">7</span>
+  <span class="property">skip_final_snapshot</span>     = <span class="value">true</span>
+  <span class="property">publicly_accessible</span>     = <span class="value">false</span>
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-label">Infrastructure</span>
+                <h2 class="section-title">25+ AWS Resources</h2>
+                <p class="section-desc">Production-grade infrastructure provisioned with a single terraform apply.</p>
+            </div>
+            <div class="resources-grid">
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🌐</div>
+                    <div class="resource-info">
+                        <h4>VPC</h4>
+                        <span>10.0.0.0/16</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🔀</div>
+                    <div class="resource-info">
+                        <h4>4 Subnets</h4>
+                        <span>2 Public + 2 Private</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🚪</div>
+                    <div class="resource-info">
+                        <h4>Internet Gateway</h4>
+                        <span>Public Access</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🔄</div>
+                    <div class="resource-info">
+                        <h4>2 NAT Gateways</h4>
+                        <span>High Availability</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">⚖️</div>
+                    <div class="resource-info">
+                        <h4>Load Balancer</h4>
+                        <span>Application LB</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🎯</div>
+                    <div class="resource-info">
+                        <h4>Target Group</h4>
+                        <span>Health Checks</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">📈</div>
+                    <div class="resource-info">
+                        <h4>Auto Scaling</h4>
+                        <span>2-4 Instances</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">💻</div>
+                    <div class="resource-info">
+                        <h4>EC2 Instances</h4>
+                        <span>t3.micro (Free Tier)</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🗄️</div>
+                    <div class="resource-info">
+                        <h4>RDS PostgreSQL</h4>
+                        <span>db.t3.micro</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">📦</div>
+                    <div class="resource-info">
+                        <h4>2 S3 Buckets</h4>
+                        <span>Assets + Logs</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🔒</div>
+                    <div class="resource-info">
+                        <h4>3 Security Groups</h4>
+                        <span>ALB + App + RDS</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">📊</div>
+                    <div class="resource-info">
+                        <h4>5 CloudWatch Alarms</h4>
+                        <span>Monitoring</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">📝</div>
+                    <div class="resource-info">
+                        <h4>VPC Flow Logs</h4>
+                        <span>Network Audit</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">🔔</div>
+                    <div class="resource-info">
+                        <h4>SNS Topic</h4>
+                        <span>Alerting</span>
+                    </div>
+                </div>
+                <div class="resource-item animate-on-scroll">
+                    <div class="resource-icon">👤</div>
+                    <div class="resource-info">
+                        <h4>IAM Roles</h4>
+                        <span>Least Privilege</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <span class="section-label">Capabilities</span>
+                <h2 class="section-title">What This Demonstrates</h2>
+                <p class="section-desc">Key skills and knowledge showcased in this project.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Infrastructure as Code</h3>
+                    <p>100% Terraform with modular, reusable components and best practices.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">☁️</div>
+                    <h3>AWS Expertise</h3>
+                    <p>Deep understanding of VPC, EC2, RDS, ALB, S3, CloudWatch, and IAM.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Security Best Practices</h3>
+                    <p>Network isolation, encryption, least privilege access, and audit logging.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">📈</div>
+                    <h3>Auto Scaling</h3>
+                    <p>Dynamic scaling based on demand with health checks and rolling updates.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">🔄</div>
+                    <h3>High Availability</h3>
+                    <p>Multi-AZ deployment with redundant components and failover capability.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon">📊</div>
+                    <h3>Monitoring & Observability</h3>
+                    <p>CloudWatch alarms, VPC flow logs, and SNS notifications.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section>
+        <div class="container">
+            <div class="cta-section animate-on-scroll">
+                <h2>Explore the Complete Codebase</h2>
+                <p>View the full Terraform code, documentation, and deployment guides on GitHub.</p>
+                <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" class="btn btn-primary" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Built with Terraform &amp; AWS | <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank">View Source Code</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
