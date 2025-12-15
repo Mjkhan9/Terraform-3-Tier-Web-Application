@@ -297,6 +297,62 @@ variable "enable_nat_gateway" {
 
 ---
 
+---
+
+## Operations & Observability
+
+### Decision: CloudWatch Dashboard for Centralized Monitoring
+
+**Choice**: Create a custom CloudWatch dashboard with all critical metrics.
+
+**Why**:
+- Single pane of glass for operations team
+- Faster incident response with pre-built views
+- Includes threshold annotations for context
+- Shows alarm status at a glance
+
+**Dashboard Sections**:
+1. ALB metrics (requests, response time, errors)
+2. EC2/ASG metrics (CPU, network, health)
+3. RDS metrics (CPU, connections, IOPS, storage)
+4. Active alarms widget
+
+### Decision: AWS Config for Continuous Compliance
+
+**Choice**: Implement AWS Config rules to continuously evaluate resource compliance.
+
+**Rules Implemented**:
+- EC2 detailed monitoring enabled
+- RDS storage encrypted
+- No unrestricted SSH access
+- S3 bucket encryption
+- VPC Flow Logs enabled
+- Required tags present
+
+**Why**:
+- Continuous compliance monitoring (not point-in-time)
+- Automated detection of configuration drift
+- Audit trail for compliance reporting
+- Aligns with CIS Benchmarks and AWS best practices
+
+### Decision: Operational Runbooks in Repository
+
+**Choice**: Store runbooks as markdown files in the repository, not external wiki.
+
+**Why**:
+- Version controlled with infrastructure code
+- Pull requests for runbook changes
+- Available offline during incidents
+- Searchable via grep/IDE
+
+**Runbook Structure**:
+- Symptoms and diagnostic commands
+- Step-by-step recovery procedures
+- Verification commands
+- Links to related runbooks
+
+---
+
 ## Summary
 
 These decisions demonstrate understanding of:
@@ -310,6 +366,8 @@ These decisions demonstrate understanding of:
 | **Database** | Managed services, encryption |
 | **CI/CD** | Shift-left security, OIDC auth |
 | **Cost** | Free tier awareness, right-sizing |
+| **Operations** | Runbooks, dashboards, drift detection |
+| **Compliance** | Continuous monitoring, Config rules |
 
 Each decision reflects real-world engineering trade-offs and AWS Well-Architected Framework principles.
 

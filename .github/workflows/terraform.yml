@@ -232,11 +232,97 @@ jobs:
             echo "✅ DEPLOYMENT.md found"
           fi
 
+  # Job 8: Generate Plan Artifact
+  plan-artifact:
+    name: 📋 Generate Plan Artifact
+    runs-on: ubuntu-latest
+    needs: [validate]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Generate Terraform Plan
+        id: plan
+        run: |
+          terraform plan -no-color -input=false \
+            -var="db_password=placeholder-for-ci" \
+            -out=tfplan 2>&1 | tee plan-output.txt
+
+      - name: Generate Plan Summary
+        run: |
+          echo "# Terraform Plan Output" > plan-summary.md
+          echo "" >> plan-summary.md
+          echo "Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> plan-summary.md
+          echo "Commit: ${{ github.sha }}" >> plan-summary.md
+          echo "" >> plan-summary.md
+          echo '```' >> plan-summary.md
+          terraform show -no-color tfplan >> plan-summary.md
+          echo '```' >> plan-summary.md
+
+      - name: Save Plan Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ github.sha }}
+          path: |
+            plan-output.txt
+            plan-summary.md
+          retention-days: 90
+
+  # Job 9: Drift Detection (scheduled)
+  drift-detection:
+    name: 🔍 Drift Detection
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Check for Drift
+        id: drift
+        run: |
+          set +e
+          terraform plan -detailed-exitcode -no-color -input=false \
+            -var="db_password=placeholder" > drift-report.txt 2>&1
+          DRIFT_EXIT=$?
+          set -e
+          
+          if [ $DRIFT_EXIT -eq 2 ]; then
+            echo "drift_detected=true" >> $GITHUB_OUTPUT
+            echo "::warning::Infrastructure drift detected!"
+          else
+            echo "drift_detected=false" >> $GITHUB_OUTPUT
+            echo "No drift detected."
+          fi
+
+      - name: Save Drift Report
+        if: steps.drift.outputs.drift_detected == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift-report-${{ github.run_id }}
+          path: drift-report.txt
+          retention-days: 30
+
   # Summary Job
   summary:
     name: 📊 Pipeline Summary
     runs-on: ubuntu-latest
-    needs: [format, validate, security, checkov, docs]
+    needs: [format, validate, security, checkov, docs, plan-artifact]
     if: always()
     steps:
       - name: Pipeline Results
@@ -250,6 +336,7 @@ jobs:
           echo "  🔒 tfsec Scan:      ${{ needs.security.result }}"
           echo "  🛡️ Checkov Scan:    ${{ needs.checkov.result }}"
           echo "  📚 Documentation:   ${{ needs.docs.result }}"
+          echo "  📋 Plan Artifact:   ${{ needs.plan-artifact.result }}"
           echo ""
           echo "═══════════════════════════════════════════"
 

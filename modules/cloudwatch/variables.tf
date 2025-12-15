@@ -18,3 +18,9 @@ variable "target_group_arn" {
   type        = string
 }
 
+variable "region" {
+  description = "AWS region for CloudWatch dashboard"
+  type        = string
+  default     = "us-east-1"
+}
+

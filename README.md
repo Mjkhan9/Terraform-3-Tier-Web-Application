@@ -49,18 +49,27 @@ No skip-level access. Each tier only accepts connections from the tier above it.
 - API endpoints for testing DB and S3 connections
 - CloudWatch Logs integration
 
-**Monitoring**
+**Monitoring & Observability**
 - CloudWatch Alarms for CPU, response time, errors
+- CloudWatch Dashboard for centralized operations view
+- Custom log metric filters for application errors
 - SNS Topic for alert notifications
 - ALB Access Logs in S3
 - VPC Flow Logs for network analysis
 
-**Security**
+**Security & Compliance**
 - Network isolation with security groups
 - Encrypted RDS storage
 - Encrypted S3 buckets
 - IAM roles with least privilege access
 - Private subnets for application and database tiers
+- AWS Config rules for continuous compliance monitoring
+
+**Operations**
+- Operational runbooks for common issues (RDS, ALB, ASG, CPU)
+- Drift detection script for configuration validation
+- Cost analysis script for budget tracking
+- GitHub Actions CI/CD with security scanning
 
 ---
 
@@ -118,14 +127,30 @@ terraform output application_url
 ├── variables.tf               # Variable definitions
 ├── outputs.tf                 # Output definitions
 ├── terraform.tfvars.example   # Example variables
-└── modules/
-    ├── vpc/                   # VPC, subnets, gateways
-    ├── security-groups/       # Security group rules
-    ├── s3/                    # S3 buckets
-    ├── rds/                   # PostgreSQL database
-    ├── alb/                   # Application Load Balancer
-    ├── asg/                   # Auto Scaling Group
-    └── cloudwatch/            # Monitoring and alarms
+├── DEPLOYMENT_EVIDENCE.md     # Validation evidence and plan output
+├── DESIGN_DECISIONS.md        # Architecture rationale
+├── modules/
+│   ├── vpc/                   # VPC, subnets, gateways
+│   ├── vpc-endpoints/         # VPC Endpoints for AWS services
+│   ├── security-groups/       # Security group rules
+│   ├── s3/                    # S3 buckets
+│   ├── rds/                   # PostgreSQL database
+│   ├── alb/                   # Application Load Balancer
+│   ├── asg/                   # Auto Scaling Group
+│   ├── cloudwatch/            # Monitoring, alarms, and dashboard
+│   ├── aws-config/            # AWS Config rules for compliance
+│   ├── secrets/               # Secrets Manager configuration
+│   └── github-oidc/           # GitHub Actions OIDC authentication
+├── runbooks/                  # Operational troubleshooting guides
+│   ├── RDS_CONNECTION_FAILURE.md
+│   ├── HIGH_CPU_UTILIZATION.md
+│   ├── ALB_5XX_ERRORS.md
+│   ├── ASG_SCALING_ISSUES.md
+│   └── SECRETS_ROTATION.md
+└── scripts/
+    ├── drift-detection.sh     # Terraform drift detection
+    ├── cost-analysis.sh       # AWS cost analysis
+    └── bootstrap-backend.sh   # Backend setup script
 ```
 
 ---
@@ -191,36 +216,64 @@ Designed for AWS Free Tier:
 - S3: 5 GB storage free
 
 **Outside Free Tier (estimate):**
-- NAT Gateway: ~$32/month per gateway
-- ALB: ~$16/month + data transfer
-- EC2: ~$7.50/month per instance
-- RDS: ~$15/month
 
-Total: ~$100-150/month for 2 instances
+| Service | Monthly Cost |
+|---------|--------------|
+| NAT Gateways (2x) | ~$65 |
+| ALB | ~$20 |
+| EC2 t3.micro (2x) | ~$15 |
+| RDS db.t3.micro | ~$15 |
+| VPC Endpoints (3x) | ~$22 |
+| S3 + misc | ~$5 |
+| **Total** | **~$140/month** |
+
+### Cost Analysis
+
+Run the cost analysis script to get a detailed breakdown:
+
+```bash
+./scripts/cost-analysis.sh --detailed
+```
 
 ### Cost Reduction Tips
 
-1. Use single NAT Gateway for dev environments
+1. Disable NAT Gateways (`enable_nat_gateway = false`) - saves ~$65/month
 2. Set `asg_desired_capacity = 1` when not testing
 3. Run `terraform destroy` when done
 4. Consider spot instances for non-production
+5. Use reserved instances for long-term production workloads
 
 ---
 
 ## Troubleshooting
 
-### Application Not Responding
+For detailed troubleshooting procedures, see the [runbooks](./runbooks/) directory.
+
+### Quick Diagnostic Commands
 
 ```bash
 # Check ALB health
 aws elbv2 describe-target-health --target-group-arn <arn>
 
 # Check ASG status
-aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names <name>
+aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names 3-tier-web-app-asg
 
 # View application logs
 aws logs tail /aws/ec2/3-tier-web-app --follow
+
+# Check for infrastructure drift
+./scripts/drift-detection.sh
 ```
+
+### Runbooks Available
+
+| Issue | Runbook |
+|-------|---------|
+| RDS connection failures | [RDS_CONNECTION_FAILURE.md](./runbooks/RDS_CONNECTION_FAILURE.md) |
+| HTTP 5XX errors | [ALB_5XX_ERRORS.md](./runbooks/ALB_5XX_ERRORS.md) |
+| High CPU utilization | [HIGH_CPU_UTILIZATION.md](./runbooks/HIGH_CPU_UTILIZATION.md) |
+| ASG scaling issues | [ASG_SCALING_ISSUES.md](./runbooks/ASG_SCALING_ISSUES.md) |
+| Credential rotation | [SECRETS_ROTATION.md](./runbooks/SECRETS_ROTATION.md) |
 
 ### Database Connection Issues
 

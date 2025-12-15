@@ -167,5 +167,18 @@ module "cloudwatch" {
   alb_arn_suffix   = module.alb.alb_arn_suffix
   asg_name         = module.asg.asg_name
   target_group_arn = module.alb.target_group_arn
+  region           = var.aws_region
+}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# COMPLIANCE & GOVERNANCE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# AWS Config Module - Continuous compliance monitoring
+module "aws_config" {
+  source = "./modules/aws-config"
+
+  project_name = var.project_name
+  environment  = var.environment
 }
 
