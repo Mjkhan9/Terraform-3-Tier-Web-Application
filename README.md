@@ -69,7 +69,7 @@ No skip-level access. Each tier only accepts connections from the tier above it.
 - Operational runbooks for common issues (RDS, ALB, ASG, CPU)
 - Drift detection script for configuration validation
 - Cost analysis script for budget tracking
-- GitHub Actions CI/CD with security scanning
+- GitHub Actions CI/CD with automated security scanning (tfsec, Checkov)
 
 ---
 
