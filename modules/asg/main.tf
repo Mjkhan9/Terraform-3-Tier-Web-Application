@@ -87,13 +87,13 @@ resource "aws_launch_template" "app" {
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
-    db_endpoint   = var.db_endpoint
-    db_name       = var.db_name
-    db_username   = var.db_username
-    db_password   = var.db_password
-    s3_bucket     = var.s3_bucket_name
-    project_name  = var.project_name
-    log_group     = aws_cloudwatch_log_group.app.name
+    db_endpoint  = var.db_endpoint
+    db_name      = var.db_name
+    db_username  = var.db_username
+    db_password  = var.db_password
+    s3_bucket    = var.s3_bucket_name
+    project_name = var.project_name
+    log_group    = aws_cloudwatch_log_group.app.name
   }))
 
   tag_specifications {
@@ -123,10 +123,10 @@ resource "aws_launch_template" "app" {
 
 # Auto Scaling Group
 resource "aws_autoscaling_group" "app" {
-  name                = "${var.project_name}-asg"
-  vpc_zone_identifier = var.private_subnet_ids
-  target_group_arns   = [var.target_group_arn]
-  health_check_type   = "ELB"
+  name                      = "${var.project_name}-asg"
+  vpc_zone_identifier       = var.private_subnet_ids
+  target_group_arns         = [var.target_group_arn]
+  health_check_type         = "ELB"
   health_check_grace_period = 300
 
   min_size         = var.min_size

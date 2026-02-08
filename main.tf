@@ -41,10 +41,10 @@ data "aws_ami" "amazon_linux" {
 module "vpc" {
   source = "./modules/vpc"
 
-  project_name       = var.project_name
-  environment        = var.environment
-  vpc_cidr           = var.vpc_cidr
-  availability_zones = slice(data.aws_availability_zones.available.names, 0, 2) # Limit to 2 AZs for cost
+  project_name         = var.project_name
+  environment          = var.environment
+  vpc_cidr             = var.vpc_cidr
+  availability_zones   = slice(data.aws_availability_zones.available.names, 0, 2) # Limit to 2 AZs for cost
   enable_nat_gateway   = var.enable_nat_gateway
   enable_vpc_flow_logs = true
 }
@@ -61,7 +61,7 @@ module "vpc_endpoints" {
   private_route_table_ids = module.vpc.private_route_table_ids
 
   # Enable endpoints for secure AWS service access
-  enable_ssm_endpoint        = var.enable_ssm_endpoints  # Session Manager (no SSH needed!)
+  enable_ssm_endpoint        = var.enable_ssm_endpoints # Session Manager (no SSH needed!)
   enable_cloudwatch_endpoint = true
   enable_secrets_endpoint    = true
 }
@@ -100,17 +100,17 @@ module "s3" {
 module "rds" {
   source = "./modules/rds"
 
-  project_name           = var.project_name
-  environment            = var.environment
-  vpc_id                 = module.vpc.vpc_id
+  project_name = var.project_name
+  environment  = var.environment
+  vpc_id       = module.vpc.vpc_id
   # Use isolated database subnets (no NAT route) for security
-  private_subnet_ids     = module.vpc.database_subnet_ids
-  db_security_group_id   = module.security_groups.rds_security_group_id
-  db_instance_class      = var.db_instance_class
-  db_allocated_storage   = var.db_allocated_storage
-  db_name                = var.db_name
-  db_username            = var.db_username
-  db_password            = var.db_password
+  private_subnet_ids   = module.vpc.database_subnet_ids
+  db_security_group_id = module.security_groups.rds_security_group_id
+  db_instance_class    = var.db_instance_class
+  db_allocated_storage = var.db_allocated_storage
+  db_name              = var.db_name
+  db_username          = var.db_username
+  db_password          = var.db_password
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -142,7 +142,7 @@ module "asg" {
   ami_id                = data.aws_ami.amazon_linux.id
   instance_type         = var.instance_type
   vpc_id                = module.vpc.vpc_id
-  private_subnet_ids    = module.vpc.private_subnet_ids  # Application layer subnets
+  private_subnet_ids    = module.vpc.private_subnet_ids # Application layer subnets
   app_security_group_id = module.security_groups.app_security_group_id
   target_group_arn      = module.alb.target_group_arn
   min_size              = var.asg_min_size

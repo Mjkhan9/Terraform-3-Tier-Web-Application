@@ -99,7 +99,7 @@ resource "aws_route_table_association" "database" {
 resource "aws_eip" "nat" {
   count = var.enable_nat_gateway ? length(var.availability_zones) : 0
 
-  domain = "vpc"
+  domain     = "vpc"
   depends_on = [aws_internet_gateway.main]
 
   tags = {

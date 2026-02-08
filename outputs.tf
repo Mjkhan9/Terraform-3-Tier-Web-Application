@@ -41,7 +41,7 @@ output "application_url" {
 
 output "instructions" {
   description = "Instructions for accessing the application"
-  value = <<-EOT
+  value       = <<-EOT
     ============================================
     🚀 3-Tier Web Application Deployed!
     ============================================

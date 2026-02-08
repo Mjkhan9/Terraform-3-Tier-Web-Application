@@ -30,14 +30,14 @@ resource "aws_db_parameter_group" "main" {
 
 # RDS Instance
 resource "aws_db_instance" "main" {
-  identifier             = "${var.project_name}-db"
-  engine                 = "postgres"
-  engine_version         = "15"
-  instance_class         = var.db_instance_class
-  allocated_storage      = var.db_allocated_storage
-  max_allocated_storage  = 100
-  storage_type           = "gp2"
-  storage_encrypted       = true
+  identifier            = "${var.project_name}-db"
+  engine                = "postgres"
+  engine_version        = "15"
+  instance_class        = var.db_instance_class
+  allocated_storage     = var.db_allocated_storage
+  max_allocated_storage = 100
+  storage_type          = "gp2"
+  storage_encrypted     = true
 
   db_name  = var.db_name
   username = var.db_username
@@ -48,13 +48,13 @@ resource "aws_db_instance" "main" {
   parameter_group_name   = aws_db_parameter_group.main.name
 
   backup_retention_period = 7
-  backup_window          = "03:00-04:00"
-  maintenance_window     = "mon:04:00-mon:05:00"
+  backup_window           = "03:00-04:00"
+  maintenance_window      = "mon:04:00-mon:05:00"
 
-  skip_final_snapshot       = true
-  deletion_protection       = false
-  publicly_accessible       = false
-  multi_az                  = false # Set to true for production
+  skip_final_snapshot        = true
+  deletion_protection        = false
+  publicly_accessible        = false
+  multi_az                   = false # Set to true for production
   auto_minor_version_upgrade = true
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]

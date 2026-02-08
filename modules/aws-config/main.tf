@@ -286,9 +286,9 @@ resource "aws_config_config_rule" "required_tags" {
   }
 
   input_parameters = jsonencode({
-    tag1Key   = "Project"
-    tag2Key   = "Environment"
-    tag3Key   = "ManagedBy"
+    tag1Key = "Project"
+    tag2Key = "Environment"
+    tag3Key = "ManagedBy"
   })
 
   depends_on = [aws_config_configuration_recorder.main]

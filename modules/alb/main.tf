@@ -6,8 +6,8 @@ resource "aws_lb" "main" {
   security_groups    = [var.alb_security_group_id]
   subnets            = var.public_subnet_ids
 
-  enable_deletion_protection = false
-  enable_http2              = true
+  enable_deletion_protection       = false
+  enable_http2                     = true
   enable_cross_zone_load_balancing = true
 
   dynamic "access_logs" {
@@ -43,8 +43,8 @@ resource "aws_lb_target_group" "app" {
   }
 
   stickiness {
-    enabled = true
-    type    = "lb_cookie"
+    enabled         = true
+    type            = "lb_cookie"
     cookie_duration = 86400
   }
 
@@ -62,7 +62,7 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.app.arn
   }
 }
@@ -78,7 +78,7 @@ resource "aws_lb_listener" "https" {
   certificate_arn   = var.certificate_arn
 
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.app.arn
   }
 }
