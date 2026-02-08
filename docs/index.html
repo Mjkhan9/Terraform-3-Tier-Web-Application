@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammad Khan | Terraform 3-Tier Web Application</title>
+    <meta name="description" content="AWS Solutions Architect - Production-grade Terraform Infrastructure Portfolio">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f97316;
+            --accent-green: #10b981;
+            --text-white: #f8fafc;
+            --text-gray: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --gradient-1: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-gray);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-white);
+        }
+
+        .header-cta {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-white);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-blue);
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        @media (max-width: 968px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .nav-links { display: none; }
+        }
+
+        .hero-text h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .hero-text h1 span {
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            margin-bottom: 32px;
+            max-width: 500px;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 968px) {
+            .hero-badges { justify-content: center; }
+            .hero-subtitle { margin: 0 auto 32px; }
+        }
+
+        .cert-badge {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .cert-badge:hover {
+            transform: scale(1.05);
+            border-color: var(--accent-orange);
+            box-shadow: 0 8px 24px rgba(249, 115, 22, 0.3);
+        }
+
+        .cert-badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 8px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 968px) {
+            .hero-buttons { justify-content: center; }
+        }
+
+        /* Stats Card */
+        .hero-stats {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .hero-stats::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 1px;
+            background: var(--gradient-1);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        /* Section */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Architecture */
+        .arch-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            overflow-x: auto;
+        }
+
+        .arch-container pre {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--accent-cyan);
+            margin: 0;
+        }
+
+        /* Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+
+        .module-card:hover {
+            border-color: var(--accent-purple);
+            background: var(--bg-card-hover);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .module-icon {
+            font-size: 24px;
+        }
+
+        .module-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .module-desc {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .module-resources {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .resource-tag {
+            padding: 3px 8px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 4px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-purple);
+        }
+
+        /* Skills Pills */
+        .skills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 48px;
+        }
+
+        .skill-pill {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-gray);
+            transition: all 0.2s;
+        }
+
+        .skill-pill:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* Other Projects Section */
+        .other-projects {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(139, 92, 246, 0.05) 100%);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-body {
+            padding: 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .project-desc {
+            color: var(--text-gray);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tech-tag {
+            padding: 4px 12px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-cyan);
+        }
+
+        .project-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .project-btn:hover {
+            background: var(--gradient-1);
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .project-btn svg {
+            transition: transform 0.2s;
+        }
+
+        .project-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Contact */
+        .contact-section {
+            background: var(--bg-dark);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .contact-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .contact-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .contact-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .contact-value {
+            color: var(--text-white);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-value:hover {
+            color: var(--accent-blue);
+        }
+
+        /* CTA */
+        .cta-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-1);
+        }
+
+        .cta-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .cta-desc {
+            color: var(--text-gray);
+            margin-bottom: 24px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .footer-text a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Mohammad Khan</div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#architecture">Architecture</a></li>
+                        <li><a href="#modules">Modules</a></li>
+                        <li><a href="#other-projects">Other Projects</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="header-cta">
+                    <a href="https://linkedin.com/in/mohammad-jkhan" target="_blank" class="btn btn-outline">LinkedIn</a>
+                    <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank" class="btn btn-primary">View Code</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Terraform 3-Tier<br><span>Web Application</span></h1>
+                    <p class="hero-subtitle">Production-grade, auto-scaling AWS infrastructure with 10 Terraform modules. Features isolated database subnets, VPC endpoints, CI/CD with GitHub Actions, and enterprise security controls.</p>
+                    
+                    <!-- AWS Certification Badges -->
+                    <div class="hero-badges">
+                        <div class="cert-badge" title="AWS Solutions Architect - Associate">
+                            <img src="https://images.credly.com/size/340x340/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png" alt="AWS Solutions Architect Associate">
+                        </div>
+                        <div class="cert-badge" title="AWS Cloud Practitioner">
+                            <img src="https://images.credly.com/size/340x340/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png" alt="AWS Cloud Practitioner">
+                        </div>
+                    </div>
+
+                    <div class="hero-buttons">
+                        <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank" class="btn btn-primary">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                            View Source Code
+                        </a>
+                        <a href="#architecture" class="btn btn-outline">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+                            View Architecture
+                        </a>
+                    </div>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">10</div>
+                            <div class="stat-label">Terraform Modules</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">25+</div>
+                            <div class="stat-label">AWS Resources</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Tier Architecture</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Free Tier Compatible</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">System Design</span>
+                <h2 class="section-title">Architecture Overview</h2>
+                <p class="section-desc">Multi-AZ deployment with isolated network tiers, auto-scaling, and comprehensive security controls.</p>
+            </div>
+
+            <div class="arch-container">
+<pre>
+                                    ┌─────────────────────────────────────────────────────────────┐
+                                    │                        INTERNET                              │
+                                    └─────────────────────────────┬───────────────────────────────┘
+                                                                  │
+                      ╔═══════════════════════════════════════════╧═══════════════════════════════════════╗
+                      ║                                   VPC (10.0.0.0/16)                                ║
+                      ║                                                                                    ║
+                      ║    ┌─────────────────────────────────────────────────────────────────────────┐    ║
+                      ║    │                        PUBLIC SUBNETS (Presentation)                    │    ║
+                      ║    │    ┌────────────────────────────────────────────────────────────┐      │    ║
+                      ║    │    │           APPLICATION LOAD BALANCER (HTTP/HTTPS)           │      │    ║
+                      ║    │    └────────────────────────────────────────────────────────────┘      │    ║
+                      ║    │    ┌─────────────────┐                    ┌─────────────────┐          │    ║
+                      ║    │    │   NAT Gateway   │                    │   NAT Gateway   │          │    ║
+                      ║    │    │     (AZ-1)      │                    │     (AZ-2)      │          │    ║
+                      ║    │    └─────────────────┘                    └─────────────────┘          │    ║
+                      ║    └─────────────────────────────────────────────────────────────────────────┘    ║
+                      ║                                        │                                          ║
+                      ║    ┌─────────────────────────────────────────────────────────────────────────┐    ║
+                      ║    │                     PRIVATE SUBNETS (Application Layer)                 │    ║
+                      ║    │    ┌────────────────────────────────────────────────────────────┐      │    ║
+                      ║    │    │              AUTO SCALING GROUP (2-4 instances)            │      │    ║
+                      ║    │    │    ┌──────────────────┐        ┌──────────────────┐       │      │    ║
+                      ║    │    │    │  EC2 (t3.micro)  │        │  EC2 (t3.micro)  │       │      │    ║
+                      ║    │    │    │   Flask App      │        │   Flask App      │       │      │    ║
+                      ║    │    │    └──────────────────┘        └──────────────────┘       │      │    ║
+                      ║    │    └────────────────────────────────────────────────────────────┘      │    ║
+                      ║    └─────────────────────────────────────────────────────────────────────────┘    ║
+                      ║                                        │                                          ║
+                      ║    ┌─────────────────────────────────────────────────────────────────────────┐    ║
+                      ║    │                   ISOLATED SUBNETS (Data Layer - No Internet)           │    ║
+                      ║    │    ┌────────────────────────────────────────────────────────────┐      │    ║
+                      ║    │    │          RDS PostgreSQL (db.t3.micro, Encrypted)           │      │    ║
+                      ║    │    └────────────────────────────────────────────────────────────┘      │    ║
+                      ║    └─────────────────────────────────────────────────────────────────────────┘    ║
+                      ║                                                                                    ║
+                      ╚════════════════════════════════════════════════════════════════════════════════════╝
+
+      ┌────────────────────────────┐   ┌────────────────────────────┐   ┌────────────────────────────┐
+      │      VPC ENDPOINTS         │   │       S3 BUCKETS           │   │      CLOUDWATCH            │
+      │  • S3 (Gateway)            │   │  • Assets (Encrypted)      │   │  • Alarms (CPU, Latency)   │
+      │  • DynamoDB (Gateway)      │   │  • ALB Logs (Lifecycle)    │   │  • VPC Flow Logs           │
+      │  • Secrets Manager         │   │  • Versioning Enabled      │   │  • SNS Notifications       │
+      │  • SSM (No SSH needed!)    │   └────────────────────────────┘   └────────────────────────────┘
+      └────────────────────────────┘
+</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modules -->
+    <section id="modules">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Infrastructure as Code</span>
+                <h2 class="section-title">10 Terraform Modules</h2>
+                <p class="section-desc">Modular, reusable components following Terraform and AWS best practices.</p>
+            </div>
+
+            <div class="modules-grid">
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">🌐</span>
+                        <span class="module-name">VPC</span>
+                    </div>
+                    <p class="module-desc">Multi-tier network with public, private, and isolated subnets across AZs.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_vpc</span>
+                        <span class="resource-tag">aws_subnet</span>
+                        <span class="resource-tag">aws_nat_gateway</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">🔌</span>
+                        <span class="module-name">VPC Endpoints</span>
+                    </div>
+                    <p class="module-desc">PrivateLink for S3, DynamoDB, SSM, and Secrets Manager.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_vpc_endpoint</span>
+                        <span class="resource-tag">Gateway</span>
+                        <span class="resource-tag">Interface</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">🔒</span>
+                        <span class="module-name">Security Groups</span>
+                    </div>
+                    <p class="module-desc">Security group chaining: ALB → App → RDS.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_security_group</span>
+                        <span class="resource-tag">Chaining</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">⚖️</span>
+                        <span class="module-name">ALB</span>
+                    </div>
+                    <p class="module-desc">Application Load Balancer with health checks and HTTPS support.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_lb</span>
+                        <span class="resource-tag">aws_lb_target_group</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">📈</span>
+                        <span class="module-name">ASG</span>
+                    </div>
+                    <p class="module-desc">Auto Scaling Group with launch templates and scaling policies.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_autoscaling_group</span>
+                        <span class="resource-tag">aws_launch_template</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">🗄️</span>
+                        <span class="module-name">RDS</span>
+                    </div>
+                    <p class="module-desc">PostgreSQL with encryption, backups, and CloudWatch logs.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_db_instance</span>
+                        <span class="resource-tag">postgres15</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">📦</span>
+                        <span class="module-name">S3</span>
+                    </div>
+                    <p class="module-desc">Encrypted buckets with versioning and lifecycle policies.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_s3_bucket</span>
+                        <span class="resource-tag">AES256</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">🔐</span>
+                        <span class="module-name">Secrets</span>
+                    </div>
+                    <p class="module-desc">AWS Secrets Manager for database credentials.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_secretsmanager_secret</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">📊</span>
+                        <span class="module-name">CloudWatch</span>
+                    </div>
+                    <p class="module-desc">Monitoring, alarms, and SNS notifications.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_cloudwatch_metric_alarm</span>
+                    </div>
+                </div>
+
+                <div class="module-card">
+                    <div class="module-header">
+                        <span class="module-icon">🪪</span>
+                        <span class="module-name">GitHub OIDC</span>
+                    </div>
+                    <p class="module-desc">Password-less CI/CD authentication.</p>
+                    <div class="module-resources">
+                        <span class="resource-tag">aws_iam_openid_connect_provider</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skills-row">
+                <span class="skill-pill">Terraform</span>
+                <span class="skill-pill">AWS</span>
+                <span class="skill-pill">Python</span>
+                <span class="skill-pill">IAM</span>
+                <span class="skill-pill">VPC</span>
+                <span class="skill-pill">EC2</span>
+                <span class="skill-pill">RDS</span>
+                <span class="skill-pill">S3</span>
+                <span class="skill-pill">CloudWatch</span>
+                <span class="skill-pill">GitHub Actions</span>
+                <span class="skill-pill">CI/CD</span>
+                <span class="skill-pill">DevSecOps</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Other Projects -->
+    <section id="other-projects" class="other-projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">More Work</span>
+                <h2 class="section-title">Other Projects</h2>
+                <p class="section-desc">Additional cloud infrastructure and security projects from my portfolio.</p>
+            </div>
+
+            <div class="projects-grid">
+                <!-- AWS Student Data Infrastructure -->
+                <div class="project-card">
+                    <div class="project-body">
+                        <div class="project-icon">🔐</div>
+                        <h3 class="project-title">Secure AWS Student Data Infrastructure</h3>
+                        <p class="project-desc">3-tier VPC with attack simulator for security testing. Automated deployment of encrypted S3, VPC Flow Logs, and least-privilege IAM roles using Python/Boto3. Demonstrates incident response capabilities.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">Boto3</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">VPC</span>
+                            <span class="tech-tag">IAM</span>
+                        </div>
+                        <a href="https://mjkhan9.github.io/aws-student-data-infrastructure/" target="_blank" class="project-btn">
+                            View This Project
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- IAM Lifecycle Management -->
+                <div class="project-card">
+                    <div class="project-body">
+                        <div class="project-icon">👤</div>
+                        <h3 class="project-title">Hybrid IAM User Lifecycle Management</h3>
+                        <p class="project-desc">Web-based automation platform (Flask + PowerShell) to sync user lifecycle events between on-prem Active Directory and AWS IAM. Features KMS credential handling and audit logging.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">IAM</span>
+                            <span class="tech-tag">Active Directory</span>
+                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">PowerShell</span>
+                            <span class="tech-tag">AWS KMS</span>
+                        </div>
+                        <a href="https://mjkhan9.github.io/Automated-IAM-User-Lifecycle-Management-System-Project/" target="_blank" class="project-btn">
+                            View This Project
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- IT Support Ticket Simulator -->
+                <div class="project-card">
+                    <div class="project-body">
+                        <div class="project-icon">🎫</div>
+                        <h3 class="project-title">IT Support Ticket Simulator</h3>
+                        <p class="project-desc">Interactive simulation platform for practicing IT support workflows, ticket triage, and incident response procedures. Features realistic scenarios based on enterprise environments.</p>
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">ITSM</span>
+                            <span class="tech-tag">ServiceNow</span>
+                            <span class="tech-tag">Incident Response</span>
+                        </div>
+                        <a href="https://mjkhan9.github.io/IT-Support-Ticket-Simulator/" target="_blank" class="project-btn">
+                            View This Project
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Get in Touch</span>
+                <h2 class="section-title">Let's Connect</h2>
+                <p class="section-desc">Open to cloud engineering opportunities and interesting infrastructure challenges.</p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">📍</div>
+                    <div class="contact-label">Location</div>
+                    <div class="contact-value">Houston, TX</div>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📞</div>
+                    <div class="contact-label">Phone</div>
+                    <a href="tel:832-612-9760" class="contact-value">(832) 612-9760</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-label">Email</div>
+                    <a href="mailto:mjkhan9@cougarnet.uh.edu" class="contact-value">mjkhan9@cougarnet.uh.edu</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">💼</div>
+                    <div class="contact-label">LinkedIn</div>
+                    <a href="https://linkedin.com/in/mohammad-jkhan" target="_blank" class="contact-value">mohammad-jkhan</a>
+                </div>
+            </div>
+
+            <div class="cta-box">
+                <h3 class="cta-title">Ready to Build Something Great?</h3>
+                <p class="cta-desc">I'm passionate about cloud architecture, security, and automation. Let's discuss how I can contribute to your team.</p>
+                <div class="cta-buttons">
+                    <a href="https://linkedin.com/in/mohammad-jkhan" target="_blank" class="btn btn-primary">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        Connect on LinkedIn
+                    </a>
+                    <a href="mailto:mjkhan9@cougarnet.uh.edu" class="btn btn-outline">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Send Email
+                    </a>
+                    <a href="https://github.com/Mjkhan9" target="_blank" class="btn btn-outline">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        View GitHub
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="footer-text">
+                Mohammad Khan · AWS Solutions Architect · Houston, TX<br>
+                <a href="https://github.com/Mjkhan9/Terraform-3-Tier-Web-Application" target="_blank">View Source Code</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

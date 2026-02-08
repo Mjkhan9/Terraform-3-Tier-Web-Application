@@ -1,0 +1,57 @@
+# Pre-commit hooks for Terraform
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Terraform formatting and validation
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.83.5
+    hooks:
+      - id: terraform_fmt
+        name: Terraform Format
+        description: Rewrites all Terraform files to canonical format
+
+      - id: terraform_validate
+        name: Terraform Validate
+        description: Validates all Terraform configuration files
+
+      - id: terraform_docs
+        name: Terraform Docs
+        description: Generates documentation from Terraform modules
+        args:
+          - --hook-config=--path-to-file=TERRAFORM_DOCS.md
+          - --hook-config=--add-to-existing-file=true
+          - --hook-config=--create-file-if-not-exist=true
+
+      - id: terraform_tflint
+        name: Terraform Lint
+        description: Validates Terraform files with TFLint
+
+  # Security scanning
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.83.5
+    hooks:
+      - id: terraform_tfsec
+        name: Terraform Security Scan (tfsec)
+        description: Static analysis for Terraform security issues
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+      - id: end-of-file-fixer
+        name: Fix End of Files
+      - id: check-yaml
+        name: Check YAML
+      - id: check-json
+        name: Check JSON
+      - id: check-merge-conflict
+        name: Check for Merge Conflicts
+      - id: detect-private-key
+        name: Detect Private Keys
+      - id: no-commit-to-branch
+        name: Protect Main Branch
+        args: ['--branch', 'main']
+

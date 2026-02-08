@@ -1,0 +1,14 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored for security
+
+aws_region = "us-east-1"
+project_name = "3-tier-web-app"
+environment = "dev"
+
+# Database credentials (REQUIRED - set these!)
+db_username = "admin"
+db_password = "YourSecurePassword123!" # Change this!
+
+# Optional: ACM certificate ARN for HTTPS
+# certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/abc123"
+
