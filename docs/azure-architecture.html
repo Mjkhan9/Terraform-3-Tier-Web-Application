@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraform 3-Tier Architecture - Interactive Visualizer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e0e0e0; }
+        .header { background: linear-gradient(135deg, #623ce4, #0078d4); padding: 24px 40px; }
+        .header h1 { font-size: 22px; }
+        .header p { color: #c0c0e0; font-size: 13px; margin-top: 6px; }
+        .container { display: grid; grid-template-columns: 1fr 320px; gap: 24px; padding: 24px 40px; min-height: 80vh; }
+        svg { width: 100%; height: 600px; background: #0d1117; border-radius: 12px; border: 1px solid #1e1e3a; }
+        .panel { background: #12122a; border: 1px solid #1e1e3a; border-radius: 12px; padding: 24px; }
+        .panel h3 { margin-bottom: 16px; color: #0078d4; font-size: 16px; }
+        .detail { margin-bottom: 16px; }
+        .detail-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+        .detail-value { font-size: 14px; margin-top: 4px; }
+        .module-list { list-style: none; }
+        .module-list li { padding: 10px 12px; margin-bottom: 6px; background: #0a0a1a; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; border-left: 3px solid transparent; }
+        .module-list li:hover { border-left-color: #0078d4; background: #1a1a3a; }
+        .module-list li.active { border-left-color: #00d4aa; background: #1a2a2a; }
+        .module-count { float: right; color: #666; font-size: 12px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #888; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+        .traffic-flow { background: #0a0a1a; border-radius: 8px; padding: 14px; margin-top: 16px; font-family: 'Courier New', monospace; font-size: 12px; color: #00d4aa; line-height: 1.8; }
+        @keyframes flowPulse { 0% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -20; } }
+        .flow-line { stroke-dasharray: 10 5; animation: flowPulse 1s linear infinite; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Terraform 3-Tier Architecture — Interactive Visualizer</h1>
+        <p>Click any component to see details · Powered by Azure Static Web Apps</p>
+    </div>
+    <div class="container">
+        <svg id="arch" viewBox="0 0 800 600">
+            <!-- VPC Background -->
+            <rect x="40" y="30" width="720" height="540" rx="12" fill="#0d1520" stroke="#1a3a5a" stroke-width="2"/>
+            <text x="60" y="58" fill="#1a5a8a" font-size="14" font-family="Segoe UI">VPC 10.0.0.0/16</text>
+
+            <!-- Public Subnet -->
+            <rect x="60" y="75" width="680" height="130" rx="8" fill="#0a1a2a" stroke="#0078d4" stroke-width="1" stroke-dasharray="4"/>
+            <text x="80" y="98" fill="#0078d4" font-size="12">Public Subnets (Multi-AZ)</text>
+
+            <!-- Internet Gateway -->
+            <rect class="component" data-name="Internet Gateway" data-module="vpc" data-desc="Entry point for all internet traffic into the VPC" x="340" y="2" width="120" height="30" rx="6" fill="#f59e0b" cursor="pointer"/>
+            <text x="363" y="22" fill="#000" font-size="11" font-weight="600" pointer-events="none">Internet GW</text>
+
+            <!-- ALB -->
+            <rect class="component" data-name="Application Load Balancer" data-module="alb" data-desc="Distributes traffic across EC2 instances with health checks, sticky sessions, and access logging to S3" x="300" y="105" width="200" height="45" rx="8" fill="#0078d4" cursor="pointer"/>
+            <text x="335" y="133" fill="white" font-size="13" font-weight="600" pointer-events="none">Application Load Balancer</text>
+
+            <!-- NAT Gateways -->
+            <rect class="component" data-name="NAT Gateway AZ-1" data-module="vpc" data-desc="Enables private subnet resources to access the internet for updates without exposing them" x="80" y="115" width="100" height="35" rx="6" fill="#0e7c42" cursor="pointer"/>
+            <text x="97" y="137" fill="white" font-size="11" pointer-events="none">NAT GW (AZ1)</text>
+            <rect class="component" data-name="NAT Gateway AZ-2" data-module="vpc" data-desc="Redundant NAT Gateway in second availability zone for high availability" x="600" y="115" width="100" height="35" rx="6" fill="#0e7c42" cursor="pointer"/>
+            <text x="617" y="137" fill="white" font-size="11" pointer-events="none">NAT GW (AZ2)</text>
+
+            <!-- Private App Subnet -->
+            <rect x="60" y="220" width="680" height="130" rx="8" fill="#1a0a2a" stroke="#a855f7" stroke-width="1" stroke-dasharray="4"/>
+            <text x="80" y="243" fill="#a855f7" font-size="12">Private App Subnets (Multi-AZ)</text>
+
+            <!-- ASG -->
+            <rect class="component" data-name="Auto Scaling Group" data-module="asg" data-desc="Manages 2-4 EC2 t3.micro instances running Flask. Scales based on CPU utilization with launch templates" x="200" y="260" width="160" height="45" rx="8" fill="#a855f7" cursor="pointer"/>
+            <text x="220" y="287" fill="white" font-size="12" font-weight="600" pointer-events="none">EC2 ASG (2-4)</text>
+
+            <!-- CloudWatch -->
+            <rect class="component" data-name="CloudWatch Monitoring" data-module="cloudwatch" data-desc="Alarms for CPU >80%, response time >2s, 5xx errors, unhealthy hosts. Dashboard with 4 widgets. VPC Flow Logs" x="450" y="260" width="160" height="45" rx="8" fill="#e74c3c" cursor="pointer"/>
+            <text x="470" y="287" fill="white" font-size="12" font-weight="600" pointer-events="none">CloudWatch</text>
+
+            <!-- Private DB Subnet -->
+            <rect x="60" y="370" width="680" height="130" rx="8" fill="#1a1a0a" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4"/>
+            <text x="80" y="393" fill="#f59e0b" font-size="12">Private DB Subnets (Isolated - No Internet)</text>
+
+            <!-- RDS -->
+            <rect class="component" data-name="RDS PostgreSQL" data-module="rds" data-desc="db.t3.micro PostgreSQL with automated backups, encryption at rest via KMS, and multi-AZ ready" x="250" y="410" width="180" height="50" rx="8" fill="#f59e0b" cursor="pointer"/>
+            <text x="284" y="440" fill="#000" font-size="13" font-weight="600" pointer-events="none">RDS PostgreSQL</text>
+
+            <!-- S3 -->
+            <rect class="component" data-name="S3 Buckets" data-module="s3" data-desc="Encrypted buckets for application assets and ALB access logs. Versioning enabled" x="500" y="415" width="120" height="40" rx="8" fill="#2ecc71" cursor="pointer"/>
+            <text x="526" y="440" fill="#000" font-size="12" font-weight="600" pointer-events="none">S3 Buckets</text>
+
+            <!-- Security Groups -->
+            <rect class="component" data-name="Security Groups" data-module="security-groups" data-desc="Chained security groups: Internet→ALB(80/443)→App(80)→DB(5432). No skip-level access allowed" x="80" y="520" width="140" height="35" rx="6" fill="#0a4a6a" stroke="#0078d4" cursor="pointer"/>
+            <text x="100" y="542" fill="#5babf0" font-size="11" pointer-events="none">Security Groups</text>
+
+            <!-- AWS Config -->
+            <rect class="component" data-name="AWS Config" data-module="aws-config" data-desc="Continuous compliance monitoring with rules for encryption, security groups, and IAM policies" x="240" y="520" width="120" height="35" rx="6" fill="#0a4a6a" stroke="#0078d4" cursor="pointer"/>
+            <text x="263" y="542" fill="#5babf0" font-size="11" pointer-events="none">AWS Config</text>
+
+            <!-- Secrets Manager -->
+            <rect class="component" data-name="Secrets Manager" data-module="secrets" data-desc="Stores database credentials with automatic rotation support. KMS encrypted" x="380" y="520" width="140" height="35" rx="6" fill="#0a4a6a" stroke="#0078d4" cursor="pointer"/>
+            <text x="398" y="542" fill="#5babf0" font-size="11" pointer-events="none">Secrets Manager</text>
+
+            <!-- GitHub OIDC -->
+            <rect class="component" data-name="GitHub OIDC" data-module="github-oidc" data-desc="Passwordless GitHub Actions authentication to AWS using OpenID Connect. No stored credentials" x="540" y="520" width="130" height="35" rx="6" fill="#0a4a6a" stroke="#0078d4" cursor="pointer"/>
+            <text x="561" y="542" fill="#5babf0" font-size="11" pointer-events="none">GitHub OIDC</text>
+
+            <!-- Flow arrows -->
+            <line class="flow-line" x1="400" y1="32" x2="400" y2="105" stroke="#f59e0b" stroke-width="2"/>
+            <line class="flow-line" x1="400" y1="150" x2="280" y2="260" stroke="#0078d4" stroke-width="2"/>
+            <line class="flow-line" x1="400" y1="150" x2="530" y2="260" stroke="#0078d4" stroke-width="2" stroke-opacity="0.4"/>
+            <line class="flow-line" x1="280" y1="305" x2="340" y2="410" stroke="#a855f7" stroke-width="2"/>
+        </svg>
+
+        <div class="panel">
+            <h3 id="detail-title">Select a Component</h3>
+            <div id="detail-content">
+                <p style="color:#666; font-size:14px;">Click any component in the architecture diagram to see its details, configuration, and the Terraform module that manages it.</p>
+            </div>
+
+            <h3 style="margin-top:24px;">Modules (11)</h3>
+            <ul class="module-list">
+                <li data-mod="vpc">vpc/ <span class="module-count">3 files</span></li>
+                <li data-mod="alb">alb/ <span class="module-count">3 files</span></li>
+                <li data-mod="asg">asg/ <span class="module-count">4 files</span></li>
+                <li data-mod="rds">rds/ <span class="module-count">3 files</span></li>
+                <li data-mod="s3">s3/ <span class="module-count">3 files</span></li>
+                <li data-mod="cloudwatch">cloudwatch/ <span class="module-count">3 files</span></li>
+                <li data-mod="security-groups">security-groups/ <span class="module-count">3 files</span></li>
+                <li data-mod="aws-config">aws-config/ <span class="module-count">3 files</span></li>
+                <li data-mod="secrets">secrets/ <span class="module-count">3 files</span></li>
+                <li data-mod="github-oidc">github-oidc/ <span class="module-count">3 files</span></li>
+                <li data-mod="vpc-endpoints">vpc-endpoints/ <span class="module-count">3 files</span></li>
+            </ul>
+
+            <div class="traffic-flow">
+                <strong style="color:#888;">Traffic Flow:</strong><br>
+                Internet → ALB:443<br>
+                ALB:80 → App-SG:80<br>
+                App-SG:5432 → DB-SG:5432<br>
+                <span style="color:#ef4444;">✗ No skip-level access</span>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#0078d4"></div>Public</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>App Tier</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>DB Tier</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#2ecc71"></div>Storage</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#0a4a6a"></div>Security</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.querySelectorAll('.component').forEach(el => {
+        el.addEventListener('click', () => {
+            const name = el.dataset.name;
+            const mod = el.dataset.module;
+            const desc = el.dataset.desc;
+            document.getElementById('detail-title').textContent = name;
+            document.getElementById('detail-content').innerHTML = `
+                <div class="detail"><div class="detail-label">Module</div><div class="detail-value">modules/${mod}/</div></div>
+                <div class="detail"><div class="detail-label">Description</div><div class="detail-value">${desc}</div></div>
+                <div class="detail"><div class="detail-label">Files</div><div class="detail-value">main.tf · variables.tf · outputs.tf</div></div>
+            `;
+            document.querySelectorAll('.module-list li').forEach(li => li.classList.remove('active'));
+            document.querySelector(`.module-list li[data-mod="${mod}"]`)?.classList.add('active');
+            document.querySelectorAll('.component').forEach(c => c.setAttribute('stroke', 'none'));
+            el.setAttribute('stroke', '#00d4aa');
+            el.setAttribute('stroke-width', '3');
+        });
+    });
+    document.querySelectorAll('.module-list li').forEach(li => {
+        li.addEventListener('click', () => {
+            const mod = li.dataset.mod;
+            const comp = document.querySelector(`.component[data-module="${mod}"]`);
+            if (comp) comp.dispatchEvent(new Event('click'));
+        });
+    });
+    </script>
+</body>
+</html>
